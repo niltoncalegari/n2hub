@@ -1,21 +1,176 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+body {
+  font-family: 'Concert One', sans-serif;
+  background: url('https://cdn.mos.cms.futurecdn.net/MXCsRopuFE4LJdKeTEE3uY.jpg') no-repeat center center fixed;
+  background-size: cover;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.card {
+  margin: 1rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid gray;
+}
+
+.russia {
+  background: linear-gradient(to bottom, #ffffff 33%, #0000ff 33%, #0000ff 66%, #ff0000 66%);
+}
+
+.usa {
+  background: linear-gradient(to bottom, 
+    #b22234 0%, #b22234 15%, 
+    #ffffff 15%, #ffffff 30%, 
+    #b22234 30%, #b22234 45%, 
+    #ffffff 45%, #ffffff 60%, 
+    #b22234 60%, #b22234 75%, 
+    #ffffff 75%, #ffffff 90%, 
+    #b22234 90%, #b22234 100%
+  );
+}
+
+.usa::before {
+  content: "";
+  background: #3c3b6e;
+  width: 40%;
+  height: 45%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.usa-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 45%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  padding: 10px;
+  gap: 0;
+  z-index: 1;
+}
+
+.usa-stars span {
+  color: white;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.usa-stars span:nth-child(even) {
+  transform: translateX(50%);
+}
+
+.card-body {
+  position: relative;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.card-title {
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.score-number {
+  font-family: 'Concert One', sans-serif;
+  font-size: 3.5rem;
+  color: black;
+  text-shadow: 1px 1px 2px gray;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.btn-contrast {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  padding: 0.5rem 1rem;
+}
+
+.btn-contrast:hover {
+  background-color: black;
+  color: white;
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.banner {
+  display: block;
+  margin: 0 auto 0 auto;
+  max-width: 500px;
+}
+
+@media only screen and (max-width: 430px) {
+  .card {
+    width: 100%;
+    margin: 0.5rem;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* Server Status Styles */
+.status-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
+
+.status-container span {
+  color: black;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.status-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-indicator.green {
+  background-color: green;
+}
+
+.status-indicator.red {
+  background-color: red;
+}
+
+.server-info {
+  text-align: center;
+  color: black;
+  font-weight: bold;
+}
+
+.server-card {
+  border: 2px solid transparent;
+}
+
+.server-card-ok {
+  border-color: green;
+} 
