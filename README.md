@@ -1,4 +1,4 @@
-# BattleBit Server Status & Leaderboard
+# N2-HUB Status & Leaderboard
 
 A web application to monitor specific BattleBit Remastered servers and maintain a scoreboard between Russia and USA.
 
