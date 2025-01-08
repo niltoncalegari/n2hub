@@ -1,43 +1,51 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot, runTransaction, doc } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/app/configs/firebase';
+import type { Server } from '@/app/types';
 import ScoreCard from '@/app/components/ScoreCard';
 import ServerStatus from '@/app/components/ServerStatus';
 import Image from 'next/image';
 
 export default function Home() {
   const [scores, setScores] = useState({ russia: 0, usa: 0 });
+  const [servers, setServers] = useState<Server[]>([]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'scores'), (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'modified' || change.type === 'added') {
-          setScores(prev => ({
-            ...prev,
-            [change.doc.id]: change.doc.data().value
-          }));
-        }
-      });
+    // Buscar dados dos servidores
+    const fetchServers = async () => {
+      const response = await fetch('/api/servers');
+      const data = await response.json();
+      setServers(data);
+    };
+
+    fetchServers();
+    const serverInterval = setInterval(fetchServers, 30000);
+
+    // Monitorar scores
+    const unsubscribeRussia = onSnapshot(collection(db, 'scores_russia'), (snapshot) => {
+      const total = snapshot.docs.reduce((acc, doc) => {
+        const points = doc.data()?.points || 0;
+        return acc + points;
+      }, 0);
+      setScores(prev => ({ ...prev, russia: total }));
     });
 
-    return () => unsubscribe();
-  }, []);
+    const unsubscribeUSA = onSnapshot(collection(db, 'scores_usa'), (snapshot) => {
+      const total = snapshot.docs.reduce((acc, doc) => {
+        const points = doc.data()?.points || 0;
+        return acc + points;
+      }, 0);
+      setScores(prev => ({ ...prev, usa: total }));
+    });
 
-  const updateScore = async (country: 'russia' | 'usa', increment: number) => {
-    const scoreRef = doc(db, 'scores', country);
-    try {
-      await runTransaction(db, async (transaction) => {
-        const doc = await transaction.get(scoreRef);
-        if (!doc.exists()) throw "Document does not exist!";
-        const newScore = doc.data().value + increment;
-        transaction.update(scoreRef, { value: newScore });
-      });
-    } catch (error) {
-      console.error("Transaction failed: ", error);
-    }
-  };
+    return () => {
+      clearInterval(serverInterval);
+      unsubscribeRussia();
+      unsubscribeUSA();
+    };
+  }, []);
 
   return (
     <div className="container mt-5">
@@ -55,14 +63,14 @@ export default function Home() {
           <ScoreCard 
             country="russia" 
             score={scores.russia}
-            onUpdateScore={(increment: number) => updateScore('russia', increment)}
+            servers={servers}
           />
         </div>
         <div className="col-md-4">
           <ScoreCard 
             country="usa" 
             score={scores.usa}
-            onUpdateScore={(increment: number) => updateScore('usa', increment)}
+            servers={servers}
           />
         </div>
       </div>
