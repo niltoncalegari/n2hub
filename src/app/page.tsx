@@ -24,27 +24,31 @@ export default function Home() {
     const serverInterval = setInterval(fetchServers, 30000);
 
     // Monitorar scores
-    const unsubscribeRussia = onSnapshot(collection(db, 'scores_russia'), (snapshot) => {
-      const total = snapshot.docs.reduce((acc, doc) => {
-        const points = doc.data()?.points || 0;
-        return acc + points;
-      }, 0);
-      setScores(prev => ({ ...prev, russia: total }));
-    });
+    try {
+      const unsubscribeRussia = onSnapshot(collection(db, 'scores_russia'), (snapshot) => {
+        const total = snapshot.docs.reduce((acc, doc) => {
+          const points = doc.data()?.points || 0;
+          return acc + points;
+        }, 0);
+        setScores(prev => ({ ...prev, russia: total }));
+      });
 
-    const unsubscribeUSA = onSnapshot(collection(db, 'scores_usa'), (snapshot) => {
-      const total = snapshot.docs.reduce((acc, doc) => {
-        const points = doc.data()?.points || 0;
-        return acc + points;
-      }, 0);
-      setScores(prev => ({ ...prev, usa: total }));
-    });
+      const unsubscribeUSA = onSnapshot(collection(db, 'scores_usa'), (snapshot) => {
+        const total = snapshot.docs.reduce((acc, doc) => {
+          const points = doc.data()?.points || 0;
+          return acc + points;
+        }, 0);
+        setScores(prev => ({ ...prev, usa: total }));
+      });
 
-    return () => {
-      clearInterval(serverInterval);
-      unsubscribeRussia();
-      unsubscribeUSA();
-    };
+      return () => {
+        clearInterval(serverInterval);
+        unsubscribeRussia();
+        unsubscribeUSA();
+      };
+    } catch (error) {
+      console.error('Firebase Error:', error);
+    }
   }, []);
 
   return (
