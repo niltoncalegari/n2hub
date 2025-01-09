@@ -7,6 +7,7 @@ import type { ServerResponse } from './types/server';
 import ScoreCard from '@/app/components/ScoreCard';
 import ServerStatus from '@/app/components/ServerStatus';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   const [scores, setScores] = useState({ russia: 0, usa: 0 });
@@ -61,6 +62,13 @@ export default function Home() {
           alt="Banner" 
           className="banner"
         />
+      </div>
+      <div className="row justify-content-center mb-4">
+        <div className="col-auto">
+          <Link href="/metrics" className="btn btn-primary">
+            View Maps Metrics
+          </Link>
+        </div>
       </div>
       <div className="row justify-content-center">
         <div className="col-md-4">
