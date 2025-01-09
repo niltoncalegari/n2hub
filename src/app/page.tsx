@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/app/configs/firebase';
-import type { Server } from '@/app/types';
+import type { ServerResponse } from './types/server';
 import ScoreCard from '@/app/components/ScoreCard';
 import ServerStatus from '@/app/components/ServerStatus';
 import Image from 'next/image';
 
 export default function Home() {
   const [scores, setScores] = useState({ russia: 0, usa: 0 });
-  const [servers, setServers] = useState<Server[]>([]);
+  const [servers, setServers] = useState<ServerResponse[]>([]);
 
   useEffect(() => {
     // Buscar dados dos servidores

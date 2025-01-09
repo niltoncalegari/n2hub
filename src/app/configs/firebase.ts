@@ -10,11 +10,5 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-console.log('Firebase Config:', {
-  hasApiKey: !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  hasAuthDomain: !!process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  hasProjectId: !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-});
-
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);

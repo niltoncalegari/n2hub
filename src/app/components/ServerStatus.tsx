@@ -1,23 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-interface Server {
-  Name: string;
-  Map: string;
-  MapSize: string;
-  Gamemode: string;
-  Region: string;
-  Players: number;
-  MaxPlayers: number;
-  Hz: number;
-  IsOfficial: boolean;
-  DayNight: string;
-  AntiCheat: string;
-}
+import type { ServerResponse } from '../types/server';
 
 export default function ServerStatus() {
-  const [servers, setServers] = useState<Server[]>([]);
+  const [servers, setServers] = useState<ServerResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

@@ -2,20 +2,14 @@ import React from 'react';
 import Image from 'next/image';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '@/app/configs/firebase';
-import type { ScoreEntry, Server } from '@/app/types';
+import type { ScoreEntry } from '../types/score';
+import type { ScoreCardProps } from '../types/scoreCard';
 
-interface ScoreCardProps {
-    country: 'russia' | 'usa';
-    score: number;
-    servers: Server[];
-  }
-  
-  export default function ScoreCard({ country, score, servers }: ScoreCardProps) {
+export default function ScoreCard({ country, score, servers }: ScoreCardProps) {
     const addScoreEntry = async (increment: number) => {
       const brazilServer = servers.find(server => server.Region === 'Brazil_Central');
       
       if (!brazilServer) {
-        console.error('No Brazil server found');
         return;
       }
 
