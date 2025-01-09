@@ -65,9 +65,14 @@ export default function Home() {
       </div>
       <div className="row justify-content-center mb-4">
         <div className="col-auto">
-          <Link href="/metrics" className="btn btn-primary">
-            View Maps Metrics
-          </Link>
+          <div className="d-flex gap-2">
+            <Link href="/metrics" className="btn btn-primary">
+              View Maps Metrics
+            </Link>
+            <Link href="/truco" className="btn btn-success">
+              Truco Counter
+            </Link>
+          </div>
         </div>
       </div>
       <div className="row justify-content-center">

@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { db } from '@/config/firebase'
+import { useState } from 'react'
+import { db } from '@/app/configs/firebase'
 import { addDoc, collection } from 'firebase/firestore'
 import styles from './truco.module.css'
 import { WinnerModal } from './components/WinnerModal'
-import { TrucoGame } from '@/app/types/truco'
+import { MatchSticks } from './components/MatchSticks'
 
 export default function TrucoCounter() {
   const [weScore, setWeScore] = useState(0)
@@ -69,10 +69,13 @@ export default function TrucoCounter() {
       <div className={styles.scoreBoard}>
         <div className={styles.team}>
           <h2>NÓS</h2>
-          <div className={styles.score}>{weScore}</div>
-          <div className={styles.buttons}>
-            <button onClick={() => handleScore('we', 'add')}>+</button>
-            <button onClick={() => handleScore('we', 'subtract')}>-</button>
+          <MatchSticks count={weScore} />
+          <div className={styles.scoreContainer}>
+            <div className={styles.score}>{weScore}</div>
+            <div className={styles.buttons}>
+              <button onClick={() => handleScore('we', 'add')}>+</button>
+              <button onClick={() => handleScore('we', 'subtract')}>-</button>
+            </div>
           </div>
         </div>
 
@@ -82,10 +85,13 @@ export default function TrucoCounter() {
 
         <div className={styles.team}>
           <h2>ELES</h2>
-          <div className={styles.score}>{theyScore}</div>
-          <div className={styles.buttons}>
-            <button onClick={() => handleScore('they', 'add')}>+</button>
-            <button onClick={() => handleScore('they', 'subtract')}>-</button>
+          <MatchSticks count={theyScore} />
+          <div className={styles.scoreContainer}>
+            <div className={styles.score}>{theyScore}</div>
+            <div className={styles.buttons}>
+              <button onClick={() => handleScore('they', 'add')}>+</button>
+              <button onClick={() => handleScore('they', 'subtract')}>-</button>
+            </div>
           </div>
         </div>
       </div>
