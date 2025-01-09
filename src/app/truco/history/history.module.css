@@ -1,0 +1,40 @@
+.container {
+  padding: 20px;
+  background: url('/wood-texture.jpg') repeat;
+  min-height: 100vh;
+}
+
+.container h1 {
+  color: #ff8c00;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.gamesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gameCard {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+}
+
+.scores {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.gameInfo {
+  border-top: 1px solid #ff8c00;
+  padding-top: 10px;
+  font-size: 0.9rem;
+} 
