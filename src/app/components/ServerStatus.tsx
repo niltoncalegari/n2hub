@@ -21,11 +21,9 @@ export default function ServerStatus() {
           throw new Error('Falha ao carregar dados');
         }
         const data = await response.json();
-        console.log('Todos os servidores:', data);
         const filteredServers = Array.isArray(data) 
           ? data.filter(server => serverNames.includes(server.Name))
           : [];
-        console.log('Servidores filtrados:', filteredServers);
         setServers(filteredServers);
         setError(null);
       } catch (err) {
