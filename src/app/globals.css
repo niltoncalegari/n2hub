@@ -173,4 +173,85 @@ body {
 
 .server-card-ok {
   border-color: green;
+}
+
+.map-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.map-card:hover {
+  transform: scale(1.02);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 95%;
+  max-width: 1200px;
+  height: 90vh;
+  overflow: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.chart-container {
+  width: 100%;
+  height: calc(100% - 100px);
+  min-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 15px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Metrics Page Styles */
+.metrics-page {
+  background-color: #000;
+  min-height: 100vh;
+  padding: 20px 0;
+}
+
+.metrics-page h1 {
+  color: #fff;
+}
+
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
 } 
