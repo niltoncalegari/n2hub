@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { db } from '@/config/firebase'
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
+import { useState, useEffect } from 'react'
+import { db } from '@/app/configs/firebase'
+import { collection, query, orderBy, getDocs } from 'firebase/firestore'
 import styles from './history.module.css'
 import { TrucoGame } from '@/app/types/truco'
 
