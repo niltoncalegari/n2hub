@@ -11,8 +11,8 @@ import type { ScoreEntry } from '@/app/types';
 const MAPS = [
   'Azagor', 'Basra', 'Construction', 'District', 'Dusty Dew',
   'Eduardovo', 'Frugis', 'Isle', 'Lonovo', 'Multu Islands', 'Namak',
-  'Oil Dunes', 'River', 'Salhan', 'Sandy Sunset', 'Tensa Town', 'Valley',
-  'Wakistan', 'Wine Paradise', 'Hot Land'
+  'Oil Dunes', 'Outskirts', 'River', 'Salhan', 'Sandy Sunset', 'Tensa Town', 'Valley',
+  'Wakistan', 'Wine Paradise', 'Hot Land', 'Zalfi'
 ];
 
 function processTimelineData(
