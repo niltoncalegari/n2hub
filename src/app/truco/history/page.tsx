@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { db } from '@/app/configs/firebase'
-import { collection, query, orderBy, getDocs } from 'firebase/firestore'
+import { collection, query, orderBy, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore'
 import styles from './history.module.css'
 import { TrucoGame } from '@/app/types/truco'
 
@@ -12,7 +12,7 @@ export default function TrucoHistory() {
   useEffect(() => {
     const q = query(collection(db, 'trucoGames'), orderBy('timestamp', 'desc'))
     
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<DocumentData>) => {
       const gamesData = querySnapshot.docs.map(doc => ({
         ...doc.data(),
         timestamp: doc.data().timestamp.toDate()

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { ServerResponse } from '../types/server';
 
 export default function ServerStatus() {
@@ -8,10 +8,10 @@ export default function ServerStatus() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const serverNames = [
+  const memoizedServerNames = useMemo(() => [
     "[RS] Rogue Soldiers | Hardcore | Conq & Dom | RSClan.gg | Discord.gg/RSclan | 120hz",
     "190-Y-00"
-  ];
+  ], []);
 
   useEffect(() => {
     const fetchServers = async () => {
@@ -22,7 +22,7 @@ export default function ServerStatus() {
         }
         const data = await response.json();
         const filteredServers = Array.isArray(data) 
-          ? data.filter(server => serverNames.includes(server.Name))
+          ? data.filter(server => memoizedServerNames.includes(server.Name))
           : [];
         setServers(filteredServers);
         setError(null);
@@ -37,7 +37,7 @@ export default function ServerStatus() {
     fetchServers();
     const interval = setInterval(fetchServers, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [memoizedServerNames]);
 
   if (loading) {
     return (
