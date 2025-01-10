@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import type { MapMetrics } from '@/app/types';
+import { MapCardProps } from '@/app/types/mapCard';
 import MapModal from '@/app/components/MapModal';
-
-interface MapCardProps {
-  mapName: string;
-  metrics: MapMetrics;
-}
 
 export default function MapCard({ mapName, metrics }: MapCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
