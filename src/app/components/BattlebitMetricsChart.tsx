@@ -5,10 +5,22 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { db } from '@/app/configs/firebase'
 import { collection, onSnapshot, Timestamp } from 'firebase/firestore'
 
+interface MapScore {
+  map: string
+  points: number
+}
+
+interface TeamDailyData {
+  totalScore: number
+  maps: MapScore[]
+}
+
 interface DailyMetric {
   date: string
   russiaScore: number
   usaScore: number
+  russiaMaps: MapScore[]
+  usaMaps: MapScore[]
 }
 
 export default function BattlebitMetricsChart() {
@@ -30,22 +42,33 @@ export default function BattlebitMetricsChart() {
   useEffect(() => {
     try {
       const unsubscribeRussia = onSnapshot(collection(db, 'scores_russia'), (snapshot) => {
-        const scoresByDate: { [key: string]: number } = {}
+        const scoresByDate: { [key: string]: TeamDailyData } = {}
         
         snapshot.docs.forEach(doc => {
           const data = doc.data()
           const date = getDateFromTimestamp(data.timestamp).toLocaleDateString()
-          scoresByDate[date] = (scoresByDate[date] || 0) + (data.points || 0)
+          
+          if (!scoresByDate[date]) {
+            scoresByDate[date] = { totalScore: 0, maps: [] }
+          }
+          
+          scoresByDate[date].totalScore += (data.points || 0)
+          scoresByDate[date].maps.push({
+            map: data.map || 'Desconhecido',
+            points: data.points || 0
+          })
         })
 
         setMetrics(prev => {
           const newMetrics = { ...Object.fromEntries(prev.map(m => [m.date, m])) }
           
-          Object.entries(scoresByDate).forEach(([date, score]) => {
+          Object.entries(scoresByDate).forEach(([date, data]) => {
             newMetrics[date] = {
               date,
-              russiaScore: score,
-              usaScore: newMetrics[date]?.usaScore || 0
+              russiaScore: data.totalScore,
+              russiaMaps: data.maps,
+              usaScore: newMetrics[date]?.usaScore || 0,
+              usaMaps: newMetrics[date]?.usaMaps || []
             }
           })
 
@@ -56,22 +79,33 @@ export default function BattlebitMetricsChart() {
       })
 
       const unsubscribeUSA = onSnapshot(collection(db, 'scores_usa'), (snapshot) => {
-        const scoresByDate: { [key: string]: number } = {}
+        const scoresByDate: { [key: string]: TeamDailyData } = {}
         
         snapshot.docs.forEach(doc => {
           const data = doc.data()
           const date = getDateFromTimestamp(data.timestamp).toLocaleDateString()
-          scoresByDate[date] = (scoresByDate[date] || 0) + (data.points || 0)
+          
+          if (!scoresByDate[date]) {
+            scoresByDate[date] = { totalScore: 0, maps: [] }
+          }
+          
+          scoresByDate[date].totalScore += (data.points || 0)
+          scoresByDate[date].maps.push({
+            map: data.map || 'Desconhecido',
+            points: data.points || 0
+          })
         })
 
         setMetrics(prev => {
           const newMetrics = { ...Object.fromEntries(prev.map(m => [m.date, m])) }
           
-          Object.entries(scoresByDate).forEach(([date, score]) => {
+          Object.entries(scoresByDate).forEach(([date, data]) => {
             newMetrics[date] = {
               date,
               russiaScore: newMetrics[date]?.russiaScore || 0,
-              usaScore: score
+              russiaMaps: newMetrics[date]?.russiaMaps || [],
+              usaScore: data.totalScore,
+              usaMaps: data.maps
             }
           })
 
@@ -89,6 +123,40 @@ export default function BattlebitMetricsChart() {
       console.error('Firebase Error:', error)
     }
   }, [])
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload || !payload.length) return null
+
+    const data = payload[0].payload
+    const formatMapList = (maps: MapScore[]) => {
+      // Agrupa pontos por mapa
+      const mapScores = maps.reduce((acc: { [key: string]: number }, curr) => {
+        acc[curr.map] = (acc[curr.map] || 0) + curr.points
+        return acc
+      }, {})
+
+      return Object.entries(mapScores)
+        .sort((a, b) => b[1] - a[1]) // Ordena por pontuação
+        .map(([map, points]) => `${map}: ${points} pts`)
+        .join('\n')
+    }
+
+    return (
+      <div className="custom-tooltip">
+        <p className="tooltip-date">{new Date(label).toLocaleDateString()}</p>
+        <div className="tooltip-content">
+          <div className="tooltip-team">
+            <strong style={{ color: '#dc3545' }}>Russia: {data.russiaScore} pts</strong>
+            <pre>{formatMapList(data.russiaMaps)}</pre>
+          </div>
+          <div className="tooltip-team">
+            <strong style={{ color: '#0d6efd' }}>USA: {data.usaScore} pts</strong>
+            <pre>{formatMapList(data.usaMaps)}</pre>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (metrics.length === 0) {
     return <div className="metrics-chart">Carregando dados...</div>
@@ -109,14 +177,7 @@ export default function BattlebitMetricsChart() {
             }}
           />
           <YAxis stroke="#fff" />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: '#212529',
-              border: '1px solid #495057',
-              borderRadius: '4px'
-            }}
-            labelFormatter={(value) => new Date(value).toLocaleDateString()}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Bar dataKey="russiaScore" name="Russia" fill="#dc3545" />
           <Bar dataKey="usaScore" name="USA" fill="#0d6efd" />
