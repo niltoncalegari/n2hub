@@ -84,13 +84,33 @@ src/
 │   │   └── servers/
 │   │       └── route.ts         # API route for server data
 │   ├── components/
-│   │   ├── ScoreCard.tsx       # Scoreboard component
-│   │   ├── ServerStatus.tsx    # Server status component
-│   │   └── GamePlatformSelector.tsx # Componente para selecionar a plataforma de jogo
+│   │   ├── MapCard.tsx          # Component to display the map
+│   │   ├── MapModal.tsx         # Modal component for the map
+│   │   ├── ScoreCard.tsx        # Scoreboard component
+│   │   └── ServerStatus.tsx     # Server status component
 │   ├── configs/
-│   │   └── firebase.ts         # Firebase configuration
-│   ├── globals.css             # Global styles
-│   └── page.tsx                # Main page
+│   │   └── firebase.ts          # Firebase configuration
+│   ├── hooks/
+│   │   └── useWindowSize.ts     # Hook to manage window size
+│   ├── metrics/
+│   │   └── page.tsx             # Metrics page
+│   └── truco/
+│       ├── components/
+│       │   ├── MatchSticks.module.css # Styles for MatchSticks
+│       │   ├── MatchSticks.tsx  # MatchSticks component
+│       │   ├── Navigation.tsx    # Navigation component
+│       │   ├── WinnerModal.module.css # Styles for WinnerModal
+│       │   └── WinnerModal.tsx   # WinnerModal component
+│       ├── history/
+│       │   ├── history.module.css # Styles for history
+│       │   └── page.tsx          # History page
+│       └── page.tsx              # Main page for truco
+├── types/
+│   ├── index.ts                  # General types
+│   ├── metrics.ts                # Types for metrics
+│   ├── score.ts                  # Types for score
+│   ├── scoreCard.ts              # Types for ScoreCard
+│   └── truco.ts                  # Types for truco
 ```
 
 ## ⚙️ Configuration
