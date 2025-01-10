@@ -8,6 +8,7 @@ A web application to monitor specific BattleBit Remastered servers and maintain 
 - Scoreboard system with Firebase persistence
 - Responsive and interactive interface
 - Automatic server status updates every 30 seconds
+- Suporte para múltiplas plataformas de jogo
 
 ## 🛠️ Technologies
 
@@ -16,6 +17,7 @@ A web application to monitor specific BattleBit Remastered servers and maintain 
 - TypeScript
 - Bootstrap
 - React
+- Tailwind CSS
 
 ## 📋 Prerequisites
 
@@ -83,7 +85,8 @@ src/
 │   │       └── route.ts         # API route for server data
 │   ├── components/
 │   │   ├── ScoreCard.tsx       # Scoreboard component
-│   │   └── ServerStatus.tsx    # Server status component
+│   │   ├── ServerStatus.tsx    # Server status component
+│   │   └── GamePlatformSelector.tsx # Componente para selecionar a plataforma de jogo
 │   ├── configs/
 │   │   └── firebase.ts         # Firebase configuration
 │   ├── globals.css             # Global styles
@@ -112,7 +115,7 @@ The project uses Firestore for data persistence. Configure your credentials in t
 - Firebase credentials are protected using environment variables
 - The `.env.local` file is not committed to the repository
 - Use `.env.example` as a reference for required variables
-
+- Implementação de medidas adicionais de segurança para proteger dados do usuário
 
 ## 📝 License
 
