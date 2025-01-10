@@ -6,6 +6,7 @@ import { db } from '@/app/configs/firebase';
 import type { ServerResponse } from './types/server';
 import ScoreCard from '@/app/components/ScoreCard';
 import ServerStatus from '@/app/components/ServerStatus';
+import BattlebitMetricsChart from '@/app/components/BattlebitMetricsChart';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -92,6 +93,11 @@ export default function Home() {
         </div>
       </div>
       <ServerStatus />
+      <div className="row">
+        <div className="col-12">
+          <BattlebitMetricsChart />
+        </div>
+      </div>
     </div>
   );
 }

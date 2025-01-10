@@ -10,5 +10,12 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Debug para verificar se as variáveis de ambiente estão sendo carregadas
+console.log('Firebase Config:', {
+  apiKey: firebaseConfig.apiKey,
+  projectId: firebaseConfig.projectId,
+  // não log outras informações sensíveis
+});
+
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
