@@ -4,36 +4,19 @@ import { useEffect, useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { db } from '@/app/configs/firebase'
 import { collection, onSnapshot, Timestamp } from 'firebase/firestore'
-
-interface MapScore {
-  map: string
-  points: number
-}
-
-interface TeamDailyData {
-  totalScore: number
-  maps: MapScore[]
-}
-
-interface DailyMetric {
-  date: string
-  russiaScore: number
-  usaScore: number
-  russiaMaps: MapScore[]
-  usaMaps: MapScore[]
-}
+import { DailyMetric, TeamDailyData, MapScore, TooltipProps, TimestampType } from '@/app/types/metrics'
 
 export default function BattlebitMetricsChart() {
   const [metrics, setMetrics] = useState<DailyMetric[]>([])
 
-  const getDateFromTimestamp = (timestamp: any): Date => {
+  const getDateFromTimestamp = (timestamp: TimestampType): Date => {
     if (timestamp instanceof Timestamp) {
       return timestamp.toDate()
     }
-    if (timestamp?.seconds) {
+    if (typeof timestamp === 'object' && 'seconds' in timestamp) {
       return new Date(timestamp.seconds * 1000)
     }
-    if (timestamp?._seconds) {
+    if (typeof timestamp === 'object' && '_seconds' in timestamp) {
       return new Date(timestamp._seconds * 1000)
     }
     return new Date(timestamp)
@@ -124,26 +107,25 @@ export default function BattlebitMetricsChart() {
     }
   }, [])
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
     if (!active || !payload || !payload.length) return null
 
     const data = payload[0].payload
     const formatMapList = (maps: MapScore[]) => {
-      // Agrupa pontos por mapa
       const mapScores = maps.reduce((acc: { [key: string]: number }, curr) => {
         acc[curr.map] = (acc[curr.map] || 0) + curr.points
         return acc
       }, {})
 
       return Object.entries(mapScores)
-        .sort((a, b) => b[1] - a[1]) // Ordena por pontuação
+        .sort((a, b) => b[1] - a[1])
         .map(([map, points]) => `${map}: ${points} pts`)
         .join('\n')
     }
 
     return (
       <div className="custom-tooltip">
-        <p className="tooltip-date">{new Date(label).toLocaleDateString()}</p>
+        <p className="tooltip-date">{new Date(label || '').toLocaleDateString()}</p>
         <div className="tooltip-content">
           <div className="tooltip-team">
             <strong style={{ color: '#dc3545' }}>Russia: {data.russiaScore} pts</strong>
