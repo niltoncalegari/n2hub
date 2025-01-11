@@ -5,9 +5,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { db } from '@/app/configs/firebase'
 import { collection, onSnapshot, Timestamp } from 'firebase/firestore'
 import { DailyMetric, TeamDailyData, MapScore, TooltipProps, TimestampType } from '@/app/types/metrics'
+import Loader from './Loader'
 
 export default function BattlebitMetricsChart() {
   const [metrics, setMetrics] = useState<DailyMetric[]>([])
+  const [loading, setLoading] = useState(true)
 
   const getDateFromTimestamp = (timestamp: TimestampType): Date => {
     if (timestamp instanceof Timestamp) {
@@ -24,6 +26,7 @@ export default function BattlebitMetricsChart() {
 
   useEffect(() => {
     try {
+      setLoading(true)
       const unsubscribeRussia = onSnapshot(collection(db, 'scores_russia'), (snapshot) => {
         const scoresByDate: { [key: string]: TeamDailyData } = {}
         
@@ -96,6 +99,7 @@ export default function BattlebitMetricsChart() {
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
             .slice(-7)
         })
+        setLoading(false)
       })
 
       return () => {
@@ -104,6 +108,7 @@ export default function BattlebitMetricsChart() {
       }
     } catch (error) {
       console.error('Firebase Error:', error)
+      setLoading(false)
     }
   }, [])
 
@@ -140,8 +145,20 @@ export default function BattlebitMetricsChart() {
     )
   }
 
+  if (loading) {
+    return (
+      <div className="metrics-chart">
+        <Loader />
+      </div>
+    )
+  }
+
   if (metrics.length === 0) {
-    return <div className="metrics-chart">Carregando dados...</div>
+    return (
+      <div className="metrics-chart">
+        <p className="text-center">Nenhum dado encontrado</p>
+      </div>
+    )
   }
 
   return (
