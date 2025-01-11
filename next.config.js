@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: [
+      'battlebit.wiki.gg',
+      'img.icons8.com'
+    ],
+  },
   headers: async () => {
     return [
       {
