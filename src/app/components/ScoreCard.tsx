@@ -3,7 +3,13 @@ import Image from 'next/image';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '@/app/configs/firebase';
 import type { ScoreEntry } from '../types/score';
-import type { ScoreCardProps } from '../types/scoreCard';
+import type { ServerResponse } from '../types/server';
+
+interface ScoreCardProps {
+    score: number;
+    country: string;
+    servers: ServerResponse[];
+}
 
 export default function ScoreCard({ country, score, servers }: ScoreCardProps) {
     const addScoreEntry = async (increment: number) => {
