@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@types/bootstrap": "^5.2.10",
+    "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
     "firebase": "^11.1.0",
     "next": "15.1.4",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/bcryptjs": "^2.4.6",
     "@types/firebase": "^3.2.3",
     "@types/node": "^20",
     "@types/react": "^19.0.4",

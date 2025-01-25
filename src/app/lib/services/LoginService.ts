@@ -1,4 +1,4 @@
-import { Login } from '../domain/entities/Login';
+import { Login } from '../models/Login';
 import { db } from '../config/firebase';
 import { collection, doc, setDoc, getDoc, updateDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 import bcrypt from 'bcryptjs';
@@ -27,8 +27,11 @@ export class LoginService {
 
             const userRef = doc(db, this.collectionName, login.cpf);
             await setDoc(userRef, userData);
-        } catch (error) {
-            throw new Error(`Erro ao criar usuário: ${error.message}`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro ao criar usuário: ${error.message}`);
+            }
+            throw new Error('Erro ao criar usuário: Erro desconhecido');
         }
     }
 
@@ -42,8 +45,11 @@ export class LoginService {
                 return userDoc.data() as Login;
             }
             return null;
-        } catch (error) {
-            throw new Error(`Erro ao buscar usuário: ${error.message}`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro ao buscar usuário: ${error.message}`);
+            }
+            throw new Error('Erro ao buscar usuário: Erro desconhecido');
         }
     }
 
@@ -57,8 +63,11 @@ export class LoginService {
                 return querySnapshot.docs[0].data() as Login;
             }
             return null;
-        } catch (error) {
-            throw new Error(`Erro ao buscar usuário: ${error.message}`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro ao buscar usuário: ${error.message}`);
+            }
+            throw new Error('Erro ao buscar usuário: Erro desconhecido');
         }
     }
 
@@ -74,8 +83,11 @@ export class LoginService {
 
             userData.updatedAt = new Date();
             await updateDoc(userRef, userData);
-        } catch (error) {
-            throw new Error(`Erro ao atualizar usuário: ${error.message}`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro ao atualizar usuário: ${error.message}`);
+            }
+            throw new Error('Erro ao atualizar usuário: Erro desconhecido');
         }
     }
 
@@ -84,8 +96,11 @@ export class LoginService {
         try {
             const userRef = doc(db, this.collectionName, cpf);
             await deleteDoc(userRef);
-        } catch (error) {
-            throw new Error(`Erro ao deletar usuário: ${error.message}`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro ao deletar usuário: ${error.message}`);
+            }
+            throw new Error('Erro ao deletar usuário: Erro desconhecido');
         }
     }
 
@@ -99,8 +114,11 @@ export class LoginService {
             if (!isValidPassword) return null;
 
             return user;
-        } catch (error) {
-            throw new Error(`Erro na validação do login: ${error.message}`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro na validação do login: ${error.message}`);
+            }
+            throw new Error('Erro na validação do login: Erro desconhecido');
         }
     }
-} 
+}
