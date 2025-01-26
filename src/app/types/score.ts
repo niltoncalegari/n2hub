@@ -3,4 +3,5 @@ export interface ScoreEntry {
   map: string;
   timestamp: number;
   region: string;
+  registeredBy: string;
 } 

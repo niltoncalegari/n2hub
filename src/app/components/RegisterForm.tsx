@@ -2,8 +2,19 @@
 import { useState, useEffect } from 'react';
 import { LoginService } from '@/app/lib/services/LoginService';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import CPFInput from './CPFInput';
+import { GoogleIcon } from './icons/GoogleIcon';
 
 export default function RegisterForm() {
     const [name, setName] = useState('');
@@ -68,9 +79,12 @@ export default function RegisterForm() {
 
     const handleGoogleRegister = async () => {
         try {
-            await loginService.signInWithGoogle();
-            // Após o login com Google, redireciona para completar o CPF
-            router.push('/complete-registration');
+            const { needsCompletion } = await loginService.signInWithGoogle();
+            if (needsCompletion) {
+                router.push('/complete-registration');
+            } else {
+                router.push('/');
+            }
         } catch (error) {
             console.error('Erro no registro com Google:', error);
             alert('Erro ao registrar com Google');
@@ -78,86 +92,106 @@ export default function RegisterForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="formLogin">
-            <h1>Cadastro</h1>
-            <p>Preencha os dados abaixo para criar sua conta.</p>
-            
-            <label htmlFor="name">Nome</label>
-            <input 
-                type="text" 
-                id="name"
-                placeholder="Digite seu nome" 
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-            />
-            
-            <label htmlFor="cpf">CPF</label>
-            <CPFInput
-                value={cpf}
-                onChange={handleCPFChange}
-                required
-            />
-            
-            <label htmlFor="email">E-mail</label>
-            <input 
-                type="email" 
-                id="email"
-                placeholder="Digite seu e-mail" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            
-            <label htmlFor="password">Senha</label>
-            <input 
-                type="password" 
-                id="password"
-                placeholder="Digite sua senha" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            
-            <label htmlFor="confirmPassword">Confirme a Senha</label>
-            <div className="password-input-container">
-                <input 
-                    type="password" 
-                    id="confirmPassword"
-                    placeholder="Confirme sua senha" 
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className={!passwordsMatch ? 'invalid' : ''}
-                />
-                {!passwordsMatch && (
-                    <span className="password-error">As senhas não coincidem</span>
-                )}
-            </div>
-            
-            <button 
-                type="submit" 
-                className="btn" 
-                disabled={!isFormValid()}
-            >
-                Cadastrar
-            </button>
-            
-            <div className="divider">ou</div>
-            
-            <button 
-                type="button" 
-                onClick={handleGoogleRegister}
-                className="btn-google"
-            >
-                <Image 
-                    src="/google-icon.png" 
-                    alt="Google" 
-                    width={20} 
-                    height={20} 
-                />
-                Cadastrar com Google
-            </button>
-        </form>
+        <div className="flex min-h-screen items-center justify-center p-4 bg-gradient-to-b from-background to-muted">
+            <Card className="w-full max-w-md border-0 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/75">
+                <CardHeader className="space-y-1">
+                    <CardTitle className="text-2xl font-bold text-primary">Cadastro</CardTitle>
+                    <CardDescription className="text-muted-foreground">
+                        Preencha os dados abaixo para criar sua conta.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name" className="text-primary">Nome</Label>
+                            <Input
+                                id="name"
+                                type="text"
+                                placeholder="Digite seu nome"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="cpf" className="text-primary">CPF</Label>
+                            <CPFInput
+                                value={cpf}
+                                onChange={handleCPFChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="email">E-mail</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="Digite seu e-mail"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Senha</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="Digite sua senha"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="confirmPassword">Confirme a Senha</Label>
+                            <Input
+                                id="confirmPassword"
+                                type="password"
+                                placeholder="Confirme sua senha"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                                className={!passwordsMatch ? 'border-red-500' : ''}
+                            />
+                            {!passwordsMatch && (
+                                <p className="text-sm text-red-500">
+                                    As senhas não coincidem
+                                </p>
+                            )}
+                        </div>
+
+                        <Button 
+                            type="submit" 
+                            className="w-full"
+                            disabled={!isFormValid()}
+                        >
+                            Cadastrar
+                        </Button>
+
+                        <div className="relative my-4">
+                            <Separator />
+                            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-muted-foreground">
+                                ou
+                            </span>
+                        </div>
+
+                        <Button 
+                            type="button"
+                            variant="outline"
+                            onClick={handleGoogleRegister}
+                            className="w-full"
+                        >
+                            <GoogleIcon className="h-5 w-5 mr-2" />
+                            Cadastrar com Google
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
     );
 } 
