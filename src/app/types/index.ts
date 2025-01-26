@@ -1,6 +1,11 @@
 export * from './score';
 export * from './server';
-export * from './metrics';
+
+interface TimelineData {
+    date: string;
+    russia: number;
+    usa: number;
+}
 
 export interface MapMetrics {
     name: string;
@@ -9,6 +14,7 @@ export interface MapMetrics {
     timestamp: string;
     map: string;
     region: string;
+    timelineData: TimelineData[];
 }
 
 export interface ServerResponse {

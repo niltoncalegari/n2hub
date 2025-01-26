@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useMemo } from 'react';
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
+import { Button } from "@/app/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/app/components/ui/dropdown-menu";
 import { useRouter } from 'next/navigation';
 import { LoginService } from "../lib/services/LoginService";
 

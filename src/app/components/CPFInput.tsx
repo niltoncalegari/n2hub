@@ -1,5 +1,5 @@
 'use client';
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/components/ui/input";
 import { validateCPF } from "@/app/lib/utils/cpfValidator";
 
 interface CPFInputProps {
