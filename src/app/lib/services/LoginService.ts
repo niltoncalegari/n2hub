@@ -1,31 +1,29 @@
-import { Login } from '../models/Login';
-import { db } from '../config/firebase';
+import { User } from '../models/User';
+import { db } from '../../configs/firebase';
 import { collection, doc, setDoc, getDoc, updateDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 import bcrypt from 'bcryptjs';
 
 export class LoginService {
     private readonly collectionName = 'users';
 
-    // Criar novo usuário
-    async createUser(login: Login): Promise<void> {
+    async createUser(user: User): Promise<void> {
         try {
             // Verifica se o CPF já existe
-            const existingUser = await this.getUserByCPF(login.cpf);
+            const existingUser = await this.getUserByCPF(user.cpf);
             if (existingUser) {
                 throw new Error('CPF já cadastrado');
             }
 
-            // Encripta a senha
-            const hashedPassword = await bcrypt.hash(login.password, 10);
+            const hashedPassword = await bcrypt.hash(user.password, 10);
 
-            const userData: Login = {
-                ...login,
+            const userData: User = {
+                ...user,
                 password: hashedPassword,
                 createdAt: new Date(),
                 updatedAt: new Date()
             };
 
-            const userRef = doc(db, this.collectionName, login.cpf);
+            const userRef = doc(db, this.collectionName, user.cpf);
             await setDoc(userRef, userData);
         } catch (error: unknown) {
             if (error instanceof Error) {
@@ -35,14 +33,13 @@ export class LoginService {
         }
     }
 
-    // Buscar usuário por CPF
-    async getUserByCPF(cpf: string): Promise<Login | null> {
+    async getUserByCPF(cpf: string): Promise<User | null> {
         try {
             const userRef = doc(db, this.collectionName, cpf);
             const userDoc = await getDoc(userRef);
             
             if (userDoc.exists()) {
-                return userDoc.data() as Login;
+                return userDoc.data() as User;
             }
             return null;
         } catch (error: unknown) {
@@ -53,14 +50,13 @@ export class LoginService {
         }
     }
 
-    // Buscar usuário por email
-    async getUserByEmail(email: string): Promise<Login | null> {
+    async getUserByEmail(email: string): Promise<User | null> {
         try {
             const q = query(collection(db, this.collectionName), where("email", "==", email));
             const querySnapshot = await getDocs(q);
             
             if (!querySnapshot.empty) {
-                return querySnapshot.docs[0].data() as Login;
+                return querySnapshot.docs[0].data() as User;
             }
             return null;
         } catch (error: unknown) {
@@ -71,8 +67,7 @@ export class LoginService {
         }
     }
 
-    // Atualizar usuário
-    async updateUser(cpf: string, userData: Partial<Login>): Promise<void> {
+    async updateUser(cpf: string, userData: Partial<User>): Promise<void> {
         try {
             const userRef = doc(db, this.collectionName, cpf);
             
@@ -91,7 +86,6 @@ export class LoginService {
         }
     }
 
-    // Deletar usuário
     async deleteUser(cpf: string): Promise<void> {
         try {
             const userRef = doc(db, this.collectionName, cpf);
@@ -104,8 +98,7 @@ export class LoginService {
         }
     }
 
-    // Validar login
-    async validateLogin(email: string, password: string): Promise<Login | null> {
+    async validateLogin(email: string, password: string): Promise<User | null> {
         try {
             const user = await this.getUserByEmail(email);
             if (!user) return null;
