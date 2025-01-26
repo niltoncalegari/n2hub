@@ -1,5 +1,6 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
+@import './styles/login.css';
 
 body {
   font-family: 'Concert One', sans-serif;

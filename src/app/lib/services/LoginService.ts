@@ -2,6 +2,7 @@ import { User } from '../models/User';
 import { db } from '../../configs/firebase';
 import { collection, doc, setDoc, getDoc, updateDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 import bcrypt from 'bcryptjs';
+import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
 
 export class LoginService {
     private readonly collectionName = 'users';
@@ -112,6 +113,32 @@ export class LoginService {
                 throw new Error(`Erro na validação do login: ${error.message}`);
             }
             throw new Error('Erro na validação do login: Erro desconhecido');
+        }
+    }
+
+    async signInWithGoogle(): Promise<void> {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            
+            // Opcionalmente, salvar informações adicionais do usuário
+            await this.createUser({
+                cpf: user.uid, // Usando UID do Google como CPF
+                name: user.displayName || '',
+                email: user.email || '',
+                password: '', // Não é necessário para login Google
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+            
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro no login com Google: ${error.message}`);
+            }
+            throw new Error('Erro no login com Google: Erro desconhecido');
         }
     }
 }
