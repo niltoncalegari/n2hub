@@ -1,4 +1,5 @@
 'use client';
+import { useCallback, useMemo } from 'react';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,38 +15,37 @@ import { useRouter } from 'next/navigation';
 import { LoginService } from "../lib/services/LoginService";
 
 interface UserNavProps {
-    userEmail: string;
-    userName: string;
+    userEmail: string | null;
+    userName: string | null;
 }
 
 export function UserNav({ userEmail, userName }: UserNavProps) {
     const router = useRouter();
-    const loginService = new LoginService();
+    const loginService = useMemo(() => new LoginService(), []);
 
-    const handleLogout = async () => {
+    const handleSignOut = useCallback(async () => {
         try {
             await loginService.signOut();
             router.push('/login');
         } catch (error) {
             console.error('Erro ao fazer logout:', error);
         }
-    };
+    }, [loginService, router]);
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                        <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
+                        <AvatarFallback>{userName?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent 
-                className="w-56" 
+                className="w-56 bg-popover border border-border shadow-md" 
                 align="end" 
                 forceMount
                 sideOffset={5}
-                className="bg-popover border border-border shadow-md"
             >
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
@@ -66,7 +66,7 @@ export function UserNav({ userEmail, userName }: UserNavProps) {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                    onClick={handleLogout}
+                    onClick={handleSignOut}
                     className="cursor-pointer"
                 >
                     Log out

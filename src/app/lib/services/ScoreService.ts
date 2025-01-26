@@ -6,6 +6,16 @@ import { getAuth } from 'firebase/auth';
 import { LoginService } from './LoginService';
 import { ServerResponse, Scores } from '@/app/types/server';
 
+interface ScoreData {
+    russia: number;
+    usa: number;
+    server?: {
+        status: 'online' | 'offline';
+        players: number;
+        maxPlayers: number;
+    };
+}
+
 export class ScoreService {
     private readonly russiaCollection = 'scores_russia';
     private readonly usaCollection = 'scores_usa';
@@ -109,7 +119,7 @@ export class ScoreService {
         }
     }
 
-    async getScores() {
+    async getScores(): Promise<ScoreData> {
         try {
             const [russiaScores, usaScores, servers] = await Promise.all([
                 getDocs(collection(db, this.russiaCollection)),
@@ -215,7 +225,7 @@ export class ScoreService {
         }
     }
 
-    subscribeToScores(callback: (scores: { russia: number; usa: number }) => void) {
+    subscribeToScores(callback: (scores: ScoreData) => void) {
         const currentScores = { russia: 0, usa: 0 };
 
         const unsubscribeRussia = onSnapshot(

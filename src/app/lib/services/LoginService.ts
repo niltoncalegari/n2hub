@@ -14,6 +14,12 @@ import {
 import { validateCPF } from '@/app/lib/utils/cpfValidator';
 import { FirebaseError } from 'firebase/app';
 
+interface UserResponse {
+    email: string;
+    cpf: string;
+    name: string;
+}
+
 export class LoginService {
     private readonly collectionName = 'users';
     private auth;
@@ -103,20 +109,24 @@ export class LoginService {
         }
     }
 
-    async getUserByEmail(email: string): Promise<User | null> {
+    async getUserByEmail(email: string): Promise<UserResponse | null> {
         try {
-            const q = query(collection(db, this.collectionName), where("email", "==", email));
+            const usersRef = collection(db, 'users');
+            const q = query(usersRef, where('email', '==', email));
             const querySnapshot = await getDocs(q);
             
             if (!querySnapshot.empty) {
-                return querySnapshot.docs[0].data() as User;
+                const userData = querySnapshot.docs[0].data();
+                return {
+                    email: userData.email,
+                    cpf: userData.cpf,
+                    name: userData.name
+                };
             }
             return null;
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                throw new Error(`Erro ao buscar usuário: ${error.message}`);
-            }
-            throw new Error('Erro ao buscar usuário: Erro desconhecido');
+        } catch (error) {
+            console.error('Erro ao buscar usuário:', error);
+            throw error;
         }
     }
 
@@ -153,13 +163,15 @@ export class LoginService {
 
     async validateLogin(emailOrCpf: string, password: string): Promise<User | null> {
         try {
-            // 1. Primeiro verifica se é email ou CPF
             const isEmail = emailOrCpf.includes('@');
-            
-            // 2. Busca o usuário no Firestore (nossa collection users)
             let user: User | null;
+            
             if (isEmail) {
-                user = await this.getUserByEmail(emailOrCpf);
+                // Busca primeiro o email para obter o CPF
+                const userResponse = await this.getUserByEmail(emailOrCpf);
+                if (!userResponse) return null;
+                // Usa o CPF para buscar o usuário completo com senha
+                user = await this.getUserByCPF(userResponse.cpf);
             } else {
                 const cpf = emailOrCpf.replace(/\D/g, '');
                 user = await this.getUserByCPF(cpf);
@@ -353,7 +365,6 @@ export class LoginService {
         try {
             const auth = getAuth();
             await auth.signOut();
-            localStorage.removeItem('user');
         } catch (error: unknown) {
             if (error instanceof Error) {
                 throw new Error(`Erro ao fazer logout: ${error.message}`);

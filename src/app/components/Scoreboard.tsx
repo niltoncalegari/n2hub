@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { ScoreService } from '@/app/lib/services/ScoreService';
 import ServerStatusCard from './ServerStatusCard';
 import { ScoreCard } from './ScoreCard';
@@ -20,7 +20,7 @@ export default function Scoreboard() {
     maxPlayers: 0
   });
 
-  const scoreService = new ScoreService();
+  const scoreService = useMemo(() => new ScoreService(), []);
 
   const handleIncrement = async (country: 'russia' | 'usa') => {
     try {
@@ -43,21 +43,30 @@ export default function Scoreboard() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadInitialScores = async () => {
       try {
         const scores = await scoreService.getScores();
         setRussiaScore(scores.russia);
         setUsaScore(scores.usa);
-        setServerStatus(scores.server);
+        if (scores.server) {
+          setServerStatus(scores.server);
+        }
       } catch (error) {
         console.error('Erro ao buscar scores:', error);
       }
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    loadInitialScores();
+    const unsubscribe = scoreService.subscribeToScores((newScores) => {
+      setRussiaScore(newScores.russia);
+      setUsaScore(newScores.usa);
+      if (newScores.server) {
+        setServerStatus(newScores.server);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [scoreService]);
 
   return (
     <div className="container mx-auto p-4 space-y-8">
