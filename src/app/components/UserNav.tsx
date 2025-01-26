@@ -35,7 +35,7 @@ export function UserNav({ userEmail, userName }: UserNavProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button variant="outline" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
                         <AvatarFallback>{userName?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
