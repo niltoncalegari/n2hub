@@ -127,4 +127,94 @@
 .btn-google:hover {
     background-color: #f5f5f5;
     transform: scale(1.02);
+}
+
+.register-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.register-link p {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.btn-register {
+    background: none;
+    border: none;
+    color: #090406;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: all linear 160ms;
+}
+
+.btn-register:hover {
+    color: #2a2929;
+    transform: scale(1.05);
+}
+
+.cpf-input-container {
+    position: relative;
+    width: 100%;
+}
+
+.cpf-input {
+    width: 100%;
+}
+
+.cpf-input.invalid {
+    border-color: #ff3333 !important;
+}
+
+.cpf-error {
+    position: absolute;
+    right: 0;
+    top: -20px;
+    color: #ff3333;
+    font-size: 12px;
+}
+
+.btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn:disabled:hover {
+    background-color: #cccccc;
+    transform: none;
+}
+
+.password-input-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.password-input-container input {
+    width: 100%;
+    padding: 15px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: all linear 160ms;
+    outline: none;
+    margin: 5px 0 0 0;
+}
+
+.password-input-container input {
+    margin-bottom: 0;
+}
+
+.password-input-container input.invalid {
+    border-color: #ff3333 !important;
+}
+
+.password-error {
+    position: absolute;
+    right: 0;
+    top: -20px;
+    color: #ff3333;
+    font-size: 12px;
 } 

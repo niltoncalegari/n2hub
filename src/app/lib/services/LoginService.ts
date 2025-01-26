@@ -3,6 +3,7 @@ import { db } from '../../configs/firebase';
 import { collection, doc, setDoc, getDoc, updateDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 import bcrypt from 'bcryptjs';
 import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
+import { validateCPF } from '@/app/lib/utils/cpfValidator';
 
 export class LoginService {
     private readonly collectionName = 'users';
@@ -124,21 +125,59 @@ export class LoginService {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
             
-            // Opcionalmente, salvar informações adicionais do usuário
-            await this.createUser({
-                cpf: user.uid, // Usando UID do Google como CPF
-                name: user.displayName || '',
-                email: user.email || '',
-                password: '', // Não é necessário para login Google
-                createdAt: new Date(),
-                updatedAt: new Date()
-            });
+            // Em vez de criar o usuário, apenas verificamos se já existe
+            const existingUser = await this.getUserByEmail(user.email || '');
+            
+            if (existingUser && existingUser.cpf) {
+                // Se já existe e tem CPF, é um login normal
+                return;
+            }
+            
+            // Se não existe ou não tem CPF, precisa completar o cadastro
+            // Os dados do Google serão usados depois, no updateUserAfterGoogleLogin
             
         } catch (error: unknown) {
             if (error instanceof Error) {
                 throw new Error(`Erro no login com Google: ${error.message}`);
             }
             throw new Error('Erro no login com Google: Erro desconhecido');
+        }
+    }
+
+    async updateUserAfterGoogleLogin(cpf: string): Promise<void> {
+        try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            
+            if (!currentUser) {
+                throw new Error('Usuário não autenticado');
+            }
+
+            if (!validateCPF(cpf)) {
+                throw new Error('CPF inválido');
+            }
+
+            // Verifica se o CPF já existe
+            const existingUser = await this.getUserByCPF(cpf);
+            if (existingUser) {
+                throw new Error('CPF já cadastrado');
+            }
+
+            // Agora sim criamos o usuário com os dados do Google + CPF
+            await this.createUser({
+                cpf,
+                name: currentUser.displayName || '',
+                email: currentUser.email || '',
+                password: '', // Não é necessário para login Google
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Erro ao atualizar usuário: ${error.message}`);
+            }
+            throw new Error('Erro ao atualizar usuário: Erro desconhecido');
         }
     }
 }

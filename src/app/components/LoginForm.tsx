@@ -77,6 +77,17 @@ export default function LoginForm() {
                 />
                 Entrar com Google
             </button>
+
+            <div className="register-link">
+                <p>Ainda não tem uma conta?</p>
+                <button 
+                    type="button" 
+                    onClick={() => router.push('/register')}
+                    className="btn-register"
+                >
+                    Cadastre-se
+                </button>
+            </div>
         </form>
     );
 } 
