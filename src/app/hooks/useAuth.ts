@@ -3,8 +3,14 @@ import { useState, useEffect, useMemo } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { LoginService } from '../lib/services/LoginService';
 
+interface AuthUser {
+    email: string | null;
+    name: string | null;
+    cpf: string | null;
+}
+
 export function useAuth() {
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<AuthUser | null>(null);
     const [loading, setLoading] = useState(true);
     const loginService = useMemo(() => new LoginService(), []);
 
